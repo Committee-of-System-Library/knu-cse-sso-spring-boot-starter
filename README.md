@@ -9,8 +9,7 @@
 1. [개발자 포털](https://chcse.knu.ac.kr/developer/apps)에서 애플리케이션을 등록합니다.
 2. 관리자 승인 후 다음 정보를 발급받습니다:
    - **Client ID** — SSO 로그인 요청 시 사용 (예: `cse-a1b2c3d4`)
-   - **Client Secret** — 클라이언트 인증용 (안전하게 보관)
-   - **JWT Secret** — JWT 토큰 검증용 HMAC-SHA256 키 (안전하게 보관)
+   - **Client Secret** — JWT 토큰 검증 + 클라이언트 인증용 (안전하게 보관)
 
 > 이 정보는 승인 시 1회만 표시됩니다. 분실 시 재발급이 필요합니다.
 
@@ -42,7 +41,7 @@ dependencies {
 knu-cse:
   sso:
     client-id: cse-a1b2c3d4              # 발급받은 Client ID
-    client-secret: <발급받은 JWT Secret>   # JWT 검증용 HMAC-SHA256 키
+    client-secret: <발급받은 Client Secret>  # JWT 검증용 HMAC-SHA256 키
 ```
 
 이 설정만으로 Spring Security의 JWT 인증이 자동 구성됩니다.
@@ -208,7 +207,7 @@ ADMIN > EXECUTIVE, FINANCE, PLANNING, PR, CULTURE > STUDENT
 
 - 서명 알고리즘: **HMAC-SHA256**
 - 토큰 유효 시간: **1시간**
-- 서비스별 고유 JWT Secret으로 서명됨 (서비스 A의 토큰은 서비스 B에서 검증 불가)
+- 서비스별 고유 Client Secret으로 서명됨 (서비스 A의 토큰은 서비스 B에서 검증 불가)
 
 ---
 
@@ -221,7 +220,7 @@ ADMIN > EXECUTIVE, FINANCE, PLANNING, PR, CULTURE > STUDENT
 knu-cse:
   sso:
     client-id: cse-a1b2c3d4
-    client-secret: <발급받은 JWT Secret>
+    client-secret: <발급받은 Client Secret>
 ```
 
 ### 2. React 프론트엔드
@@ -263,7 +262,7 @@ function handleCallback() {
 
 ### 3. 다른 언어/프레임워크
 
-JWT Secret을 사용하여 HMAC-SHA256으로 토큰을 직접 검증할 수 있습니다:
+Client Secret을 사용하여 HMAC-SHA256으로 토큰을 직접 검증할 수 있습니다:
 
 **Python (PyJWT)**
 ```python
@@ -271,7 +270,7 @@ import jwt
 
 payload = jwt.decode(
     token,
-    "발급받은_JWT_Secret",
+    "발급받은_Client_Secret",
     algorithms=["HS256"],
     audience="cse-a1b2c3d4"
 )
@@ -282,7 +281,7 @@ print(payload["name"], payload["email"])
 ```javascript
 const jwt = require('jsonwebtoken');
 
-const payload = jwt.verify(token, '발급받은_JWT_Secret', {
+const payload = jwt.verify(token, '발급받은_Client_Secret', {
     algorithms: ['HS256'],
     audience: 'cse-a1b2c3d4',
 });
