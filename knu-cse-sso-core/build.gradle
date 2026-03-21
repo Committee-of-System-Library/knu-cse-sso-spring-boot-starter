@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    compileOnly 'org.springframework.security:spring-security-core:6.4.2'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'knu-cse-sso-core'
+            from components.java
+        }
+    }
+}

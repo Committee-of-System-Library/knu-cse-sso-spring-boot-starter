@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':knu-cse-sso-core')
+
+    compileOnly 'org.springframework.boot:spring-boot-autoconfigure:3.4.2'
+    compileOnly 'org.springframework.boot:spring-boot-starter-security:3.4.2'
+    compileOnly 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.4.2'
+    compileOnly 'org.springframework.security:spring-security-config:6.4.2'
+    compileOnly 'org.springframework.boot:spring-boot-starter-web:3.4.2'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor:3.4.2'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'knu-cse-sso-spring-boot-starter'
+            from components.java
+        }
+    }
+}

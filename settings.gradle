@@ -1,0 +1,4 @@
+rootProject.name = 'knu-cse-sso'
+
+include 'knu-cse-sso-core'
+include 'knu-cse-sso-spring-boot-starter'
