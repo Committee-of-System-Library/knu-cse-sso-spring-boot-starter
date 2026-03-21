@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KnuCseSsoProperties {
 
     private String clientId;
+    private String clientSecret;
     private String issuerUri;
     private String jwksUri;
 
@@ -15,6 +16,14 @@ public class KnuCseSsoProperties {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     public String getIssuerUri() {

@@ -1,5 +1,7 @@
 package kr.ac.knu.cse.sso.autoconfigure;
 
+import java.nio.charset.StandardCharsets;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -16,14 +18,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @AutoConfiguration
 @ConditionalOnClass(HttpSecurity.class)
-@ConditionalOnProperty(prefix = "knu-cse.sso", name = "jwks-uri")
+@ConditionalOnProperty(prefix = "knu-cse.sso", name = "client-id")
 @EnableConfigurationProperties(KnuCseSsoProperties.class)
 public class KnuCseSsoAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
     public JwtDecoder jwtDecoder(KnuCseSsoProperties properties) {
-        return NimbusJwtDecoder.withJwkSetUri(properties.getJwksUri()).build();
+        if (properties.getJwksUri() != null && !properties.getJwksUri().isBlank()) {
+            return NimbusJwtDecoder.withJwkSetUri(properties.getJwksUri()).build();
+        }
+        SecretKeySpec key = new SecretKeySpec(
+                properties.getClientSecret().getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
+        );
+        return NimbusJwtDecoder.withSecretKey(key).build();
     }
 
     @Bean
