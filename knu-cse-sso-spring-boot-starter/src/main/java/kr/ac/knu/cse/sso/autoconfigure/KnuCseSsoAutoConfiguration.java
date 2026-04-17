@@ -13,6 +13,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -25,9 +26,10 @@ public class KnuCseSsoAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     public JwtDecoder jwtDecoder(KnuCseSsoProperties properties) {
-        if (properties.getJwksUri() != null && !properties.getJwksUri().isBlank()) {
-            return NimbusJwtDecoder.withJwkSetUri(properties.getJwksUri()).build();
-        }
+        Assert.hasText(
+                properties.getClientSecret(),
+                "knu-cse.sso.client-secret must be set — auth-server issues HMAC-SHA256 signed JWTs"
+        );
         SecretKeySpec key = new SecretKeySpec(
                 properties.getClientSecret().getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"

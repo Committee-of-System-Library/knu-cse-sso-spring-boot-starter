@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'kr.ac.knu.cse:knu-cse-sso-spring-boot-starter:1.0.0'
+    implementation 'kr.ac.knu.cse:knu-cse-sso-spring-boot-starter:1.1.0'
 }
 ```
 
@@ -46,7 +46,7 @@ knu-cse:
 
 이 설정만으로 Spring Security의 JWT 인증이 자동 구성됩니다.
 
-> `jwks-uri`를 설정하면 HMAC 대신 JWKS(RSA) 방식으로 토큰을 검증합니다. 일반적인 외부 서비스는 `client-secret` 방식을 사용합니다.
+> auth-server 가 발급하는 JWT 는 **HMAC-SHA256 대칭키** 서명 (서비스별 Client Secret). 자체 `JwtDecoder` 빈을 등록하면 override 됨.
 
 ### 4. Security 설정
 
