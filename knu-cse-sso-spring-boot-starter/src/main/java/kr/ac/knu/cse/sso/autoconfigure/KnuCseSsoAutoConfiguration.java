@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.util.Assert;
@@ -34,7 +35,14 @@ public class KnuCseSsoAutoConfiguration implements WebMvcConfigurer {
                 properties.getClientSecret().getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"
         );
-        return NimbusJwtDecoder.withSecretKey(key).build();
+        // Pin HS256 explicitly. Without this Nimbus uses the default (HS256)
+        // but inherits whatever the JWT header advertises, so a token signed
+        // with HS384/HS512 (e.g. JJWT auto-picks HS384 for ≥48-byte secrets)
+        // would surface as "Another algorithm expected, or no matching key(s)
+        // found". Pinning makes the contract explicit on both ends.
+        return NimbusJwtDecoder.withSecretKey(key)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
     }
 
     @Bean

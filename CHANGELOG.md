@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.2.0 (2026-04-17)
+
+### Fixes
+
+- `JwtDecoder` 에 `macAlgorithm(MacAlgorithm.HS256)` 명시. 기존엔 알고리즘 명시 없이 `NimbusJwtDecoder.withSecretKey(...)` 만 사용해서, auth-server 가 시크릿 길이에 따라 HS384 로 발급(`Keys.hmacShaKeyFor` 가 ≥48바이트 키에서 HS384 자동 선택)한 토큰을 받으면 `"Another algorithm expected, or no matching key(s) found"` 로 401 거부되던 케이스가 있었음. 양쪽에서 HS256 을 강제하도록 starter 도 명시 고정.
+
+### Migration from 1.1.0
+
+깨지는 변경 없음. consumer `application.yml` / `SecurityConfig` 그대로. `build.gradle(.kts)` 의존 버전만 1.2.0 으로 올리면 됨.
+
+```gradle
+implementation 'kr.ac.knu.cse:knu-cse-sso-spring-boot-starter:1.2.0'
+```
+
+auth-server 가 기존에 HS384 토큰을 발급 중이었다면 starter 1.2.0 이전에는 우연히(혹은 다른 이유로) 통과되던 흐름이 명시 거부될 수 있음. 정상 동작하는 환경이면 영향 없음.
+
 ## 1.1.0 (2026-04-17)
 
 ### Breaking changes
